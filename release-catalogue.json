@@ -1,8 +1,39 @@
 {
   "schemaVersion": 1,
   "repository": "contemptx/ftpsync-releases",
-  "generatedAt": "2026-11-28T07:10:07.096Z",
+  "generatedAt": "2026-11-28T10:57:40.461Z",
   "releases": [
+    {
+      "id": 461491454,
+      "tag_name": "nas-v0.22.0-rc.60",
+      "draft": false,
+      "prerelease": true,
+      "published_at": "2026-11-28T10:57:22Z",
+      "html_url": "https://github.com/contemptx/ftpsync-releases/releases/tag/nas-v0.22.0-rc.60",
+      "assets": [
+        {
+          "name": "FTPSYNC-NAS-0.22.0-rc.60-amd64.zip",
+          "size": 8659,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.60/FTPSYNC-NAS-0.22.0-rc.60-amd64.zip",
+          "state": "uploaded",
+          "digest": "sha256:c7aa27c6e2b310f74b5faa7ccd04115dad780237d3df1e92fc044ace6deffedd"
+        },
+        {
+          "name": "FTPSYNC-NAS-0.22.0-rc.60-arm64.zip",
+          "size": 8658,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.60/FTPSYNC-NAS-0.22.0-rc.60-arm64.zip",
+          "state": "uploaded",
+          "digest": "sha256:8c05f67578587d2f1cdd2d69ffd9e00001dedfabbd171ef7e1fde702855a1729"
+        },
+        {
+          "name": "SHA256SUMS",
+          "size": 204,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.60/SHA256SUMS",
+          "state": "uploaded",
+          "digest": "sha256:2d6f96083622f89b2c8ccbd2fe1c8be3549b9b01cf6b0064f3161f67c2572d71"
+        }
+      ]
+    },
     {
       "id": 461372697,
       "tag_name": "v0.22.0-rc.60",

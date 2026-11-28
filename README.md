@@ -13,7 +13,7 @@ This repository contains installers, packaged applications, release notes and si
 | --- | --- | --- | --- |
 | Windows Stable | 0.22.2 | 28 November 2026 | [Windows installer](https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.2/FTPSYNC-0.22.2-windows-x86_64-Setup.exe) · [Release notes](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.2) |
 | Windows Preview / beta | 0.22.0-rc.60 | 28 November 2026 | [Windows installer](https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.60/FTPSYNC-0.22.0-rc.60-windows-x86_64-Setup.exe) · [Release notes](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.60) |
-| Docker / NAS Preview | 0.22.0-rc.49 | 15 November 2026 | [amd64 bundle](https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.49/FTPSYNC-NAS-0.22.0-rc.49-amd64.zip) · [arm64 bundle](https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.49/FTPSYNC-NAS-0.22.0-rc.49-arm64.zip) · [Setup instructions](https://ftpsync.io/docker) |
+| Docker / NAS Preview | 0.22.0-rc.60 | 28 November 2026 | [amd64 bundle](https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.60/FTPSYNC-NAS-0.22.0-rc.60-amd64.zip) · [arm64 bundle](https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.60/FTPSYNC-NAS-0.22.0-rc.60-arm64.zip) · [Setup instructions](https://ftpsync.io/docker) |
 
 ### Latest five Windows releases
 
