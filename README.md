@@ -6,14 +6,14 @@ This repository contains installers, packaged applications, release notes and si
 
 ## Windows downloads
 
-| Channel | Published version | Release |
+| Channel | Current Windows release | Download |
 | --- | --- | --- |
-| Stable | 0.22.0 — 11 November 2026 | [Stable download](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0) |
-| Preview / beta | 0.22.0-rc.54 — 23 November 2026 | [RC54 Preview download](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.54) |
+| Stable | 0.22.1 (28 November 2026) | [Latest Stable release](https://github.com/contemptx/ftpsync-releases/releases/latest) |
+| Preview / beta | 0.22.0-rc.57 (28 November 2026) | [RC57 Preview release](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.57) |
 
-GitHub's **Latest** link selects the Stable release. Newer Preview releases are labelled **Pre-release** and are listed on the [Releases page](https://github.com/contemptx/ftpsync-releases/releases). Development changes are available to customers only after a new package and update feed have been published.
+For a new installation, download the file ending in `-Setup.exe` from the release page. If FTPSYNC is already installed, open **Settings → Software updates** to check your channel.
 
-RC54 includes large-queue and small-file download improvements. Additional performance work after RC54 remains in development and is not included in that package.
+Both releases fix a licence activation check that could get stuck and add a redacted report for support. Customers using persistent FTP accounts can use the Preview channel. [All releases](https://github.com/contemptx/ftpsync-releases/releases)
 
 ## Updates
 
