@@ -13,7 +13,7 @@ This repository contains installers, packaged applications, release notes and si
 
 For a new installation, download the file ending in `-Setup.exe` from the release page. If FTPSYNC is already installed, open **Settings → Software updates** to check your channel.
 
-Both releases fix a licence activation check that could get stuck and add a redacted report for support. Customers using persistent FTP accounts can use the Preview channel. [All releases](https://github.com/contemptx/ftpsync-releases/releases)
+Both releases fix a licence activation check that could get stuck, add a redacted report for support, and keep saved account access connected until sign-out or revocation. Persistent FTP account connections currently require Preview RC57. [All releases](https://github.com/contemptx/ftpsync-releases/releases)
 
 ## Updates
 
