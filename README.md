@@ -9,7 +9,7 @@ This repository contains installers, packaged applications, release notes and si
 | Channel | Current Windows release | Download |
 | --- | --- | --- |
 | Stable | 0.22.2 (28 November 2026) | [Latest Stable release](https://github.com/contemptx/ftpsync-releases/releases/latest) |
-| Preview / beta | 0.22.0-rc.57 (28 November 2026) | [RC57 Preview release](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.57) |
+| Preview / beta | 0.22.0-rc.58 (28 November 2026) | [RC58 Preview release](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.58) |
 
 For a new installation, download the file ending in `-Setup.exe` from the release page. If FTPSYNC is already installed, open **Settings → Software updates** to check your channel.
 
