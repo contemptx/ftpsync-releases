@@ -1,5 +1,6 @@
-import { readFile, writeFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const REPOSITORY = 'contemptx/ftpsync-releases';
 export const START = '<!-- FTPSYNC-DOWNLOADS:START -->';
@@ -46,7 +47,8 @@ function hasAsset(release, name) {
 }
 
 export function classifyRelease(release) {
-  if (!release || release.draft !== false || typeof release.tag_name !== 'string' || !Array.isArray(release.assets)
+  if (!release || !Number.isSafeInteger(release.id) || release.id < 1
+    || release.draft !== false || typeof release.tag_name !== 'string' || !Array.isArray(release.assets)
     || typeof release.published_at !== 'string' || !Number.isFinite(Date.parse(release.published_at))) return null;
   const kind = release.tag_name?.startsWith('nas-v') ? 'nas' : 'windows';
   const version = versionOf(release.tag_name, kind === 'nas' ? 'nas-v' : 'v');
@@ -78,7 +80,7 @@ export async function fetchReleases({ fetchImpl = fetch, token = process.env.GIT
     const releases = await response.json();
     if (!Array.isArray(releases) || releases.length > 100) throw new Error('Invalid GitHub release-list response');
     for (const release of releases) {
-      if (!Number.isSafeInteger(release?.id) || ids.has(release.id)) throw new Error('Invalid or repeated release ID during pagination');
+      if (!Number.isSafeInteger(release?.id) || release.id < 1 || ids.has(release.id)) throw new Error('Invalid or repeated release ID during pagination');
       ids.add(release.id); all.push(release);
     }
     if (releases.length < 100) return all;
@@ -115,15 +117,72 @@ export function replaceCatalogue(readme, catalogue) {
   return `${readme.slice(0, start)}\n${catalogue}\n${readme.slice(end)}`;
 }
 
-export async function refreshReadme({ file = new URL('../README.md', import.meta.url), releases } = {}) {
-  const before = await readFile(file, 'utf8');
-  const after = replaceCatalogue(before, renderCatalogue(releases ?? await fetchReleases()));
-  if (after === before) return false;
-  await writeFile(file, after, 'utf8');
-  return true;
+export function buildMachineCatalogue(releases, { previous = null, generatedAt = new Date().toISOString() } = {}) {
+  const isoUTC = value => typeof value === 'string' && Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
+  if (!isoUTC(generatedAt)) throw new Error('Catalogue generation time must be UTC ISO 8601');
+  const recognised = releases.map(classifyRelease).filter(Boolean).filter(item => {
+    // Match FTPSYNC.io's consumer contract; README retains legacy NAS compatibility.
+    return /^(?:v\d+\.\d+\.\d+(?:-rc\.\d+)?|nas-v\d+\.\d+\.\d+(?:-rc\.\d+)?)$/.test(item.release.tag_name)
+      && (item.kind !== 'nas' || item.required[0].startsWith('FTPSYNC-NAS-'));
+  }).sort((a, b) => Date.parse(b.release.published_at) - Date.parse(a.release.published_at)
+    || compareVersions(b.version, a.version) || a.release.tag_name.localeCompare(b.release.tag_name));
+  if (new Set(recognised.map(item => item.release.id)).size !== recognised.length
+    || new Set(recognised.map(item => item.release.tag_name)).size !== recognised.length) throw new Error('Duplicate machine catalogue release');
+  const rows = recognised.map(({ release, required }) => ({
+    id: release.id, tag_name: release.tag_name, draft: false, prerelease: release.prerelease,
+    published_at: release.published_at, html_url: release.html_url,
+    assets: required.map(name => {
+      const asset = release.assets.find(value => value.name === name);
+      return { name, size: asset.size, browser_download_url: asset.browser_download_url, state: 'uploaded',
+        digest: typeof asset.digest === 'string' && /^sha256:[a-f0-9]{64}$/.test(asset.digest) ? asset.digest : null };
+    }),
+  }));
+  // Both outputs must have complete current channels before either file is replaced.
+  renderCatalogue(rows);
+  const unchanged = previous?.schemaVersion === 1 && previous.repository === REPOSITORY
+    && JSON.stringify(previous.releases) === JSON.stringify(rows) && isoUTC(previous.generatedAt);
+  return { schemaVersion: 1, repository: REPOSITORY, generatedAt: unchanged ? previous.generatedAt : generatedAt, releases: rows };
+}
+
+async function replaceOutputs(outputs) {
+  const staged = [], applied = [];
+  try {
+    // Prepare every new output and rollback copy before changing either original.
+    for (const output of outputs.filter(item => item.before !== item.after)) {
+      const directory = await mkdtemp(join(dirname(output.file), '.ftpsync-catalogue-'));
+      const item = { ...output, directory }; staged.push(item);
+      await writeFile(join(directory, 'next'), item.after, { flag: 'wx' });
+      if (item.before !== null) await writeFile(join(directory, 'previous'), item.before, { flag: 'wx' });
+    }
+    for (const item of staged) { await rename(join(item.directory, 'next'), item.file); applied.push(item); }
+  } catch (error) {
+    for (const item of applied.reverse()) {
+      if (item.before === null) await rm(item.file);
+      else await rename(join(item.directory, 'previous'), item.file);
+    }
+    throw error;
+  } finally {
+    for (const item of staged) await rm(item.directory, { recursive: true, force: true }).catch(() => {});
+  }
+  return staged.length > 0;
+}
+
+export async function refreshReadme({ file = new URL('../README.md', import.meta.url), catalogueFile, releases, generatedAt } = {}) {
+  const readmePath = file instanceof URL ? fileURLToPath(file) : resolve(file);
+  const cataloguePath = catalogueFile ?? join(dirname(readmePath), 'release-catalogue.json');
+  if (resolve(readmePath) === resolve(cataloguePath)) throw new Error('README and catalogue must be separate files');
+  const before = await readFile(readmePath, 'utf8');
+  const previousJSON = await readFile(cataloguePath, 'utf8').catch(error => { if (error.code === 'ENOENT') return null; throw error; });
+  const published = releases ?? await fetchReleases();
+  const after = replaceCatalogue(before, renderCatalogue(published));
+  const catalogue = buildMachineCatalogue(published, { previous: previousJSON === null ? null : JSON.parse(previousJSON), generatedAt });
+  return replaceOutputs([
+    { file: readmePath, before, after },
+    { file: cataloguePath, before: previousJSON, after: `${JSON.stringify(catalogue, null, 2)}\n` },
+  ]);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  try { console.log(await refreshReadme() ? 'Updated README download catalogue.' : 'README download catalogue is current.'); }
+  try { console.log(await refreshReadme() ? 'Updated README and public JSON download catalogue.' : 'README and public JSON download catalogue are current.'); }
   catch (error) { console.error(error.message); process.exitCode = 1; }
 }

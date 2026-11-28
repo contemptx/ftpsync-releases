@@ -12,6 +12,7 @@ on:
   pull_request:
     paths:
       - 'README.md'
+      - 'release-catalogue.json'
       - 'scripts/refresh-downloads*.mjs'
       - '.github/workflows/refresh-downloads.yml'
 
@@ -48,13 +49,13 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - name: Refresh the marked README region from published assets
+      - name: Refresh README and JSON catalogue from published assets
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/refresh-downloads.mjs
-      - name: Commit only a changed README
+      - name: Commit only changed download catalogues
         run: |
-          git add -- README.md
+          git add -- README.md release-catalogue.json
           if git diff --cached --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

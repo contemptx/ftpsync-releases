@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { REPOSITORY, START, END, classifyRelease, fetchReleases, renderCatalogue, replaceCatalogue, refreshReadme } from './refresh-downloads.mjs';
+import { REPOSITORY, START, END, buildMachineCatalogue, classifyRelease, fetchReleases, renderCatalogue, replaceCatalogue, refreshReadme } from './refresh-downloads.mjs';
 
 let nextID = 1;
 function release(version, { nas = false, published = '2026-11-28T01:00:00Z', draft = false } = {}) {
@@ -82,7 +82,51 @@ test('only the marked region changes; missing/duplicate markers and absent compl
     const file = join(directory, 'README.md'); await writeFile(file, original);
     await assert.rejects(refreshReadme({ file, releases: [release('0.22.2')] }), /complete Stable, Preview and Docker/);
     assert.equal(await readFile(file, 'utf8'), original);
-    assert.equal(await refreshReadme({ file, releases: fixtures() }), true);
-    assert.equal(await refreshReadme({ file, releases: fixtures() }), false);
+    const releases = fixtures();
+    assert.equal(await refreshReadme({ file, releases }), true);
+    assert.equal(await refreshReadme({ file, releases }), false);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('machine catalogue preserves exact public asset metadata and excludes unsupported legacy NAS/prerelease contracts', () => {
+  const input = fixtures();
+  input[0].assets[0].digest = `sha256:${'a'.repeat(64)}`;
+  input[0].assets[1].digest = 'not-a-digest';
+  input[0].body = 'Not included in the public contract';
+  input[0].assets.push({ name: 'unrelated.zip', size: 99, state: 'uploaded', browser_download_url: 'https://example.com/unrelated.zip' });
+  const legacy = release('0.22.0-rc.33', { nas: true });
+  for (const asset of legacy.assets) { asset.name = asset.name.replace('FTPSYNC-NAS-', 'ftpsync-nas-'); asset.browser_download_url = asset.browser_download_url.replace('FTPSYNC-NAS-', 'ftpsync-nas-'); }
+  const draft = release('9.0.0', { draft: true });
+  const output = buildMachineCatalogue([...input, legacy, draft, release('1.0.0-beta.1')], { generatedAt: '2026-11-28T07:00:00.000Z' });
+  assert.deepEqual(Object.keys(output), ['schemaVersion', 'repository', 'generatedAt', 'releases']);
+  assert.equal(output.schemaVersion, 1); assert.equal(output.repository, REPOSITORY);
+  assert.equal(output.releases.length, 3);
+  const stable = output.releases.find(item => item.tag_name === 'v0.22.2');
+  assert.deepEqual(Object.keys(stable), ['id', 'tag_name', 'draft', 'prerelease', 'published_at', 'html_url', 'assets']);
+  assert.deepEqual(stable.assets[0], { name: input[0].assets[0].name, size: 1024, browser_download_url: input[0].assets[0].browser_download_url, state: 'uploaded', digest: input[0].assets[0].digest });
+  assert.equal(stable.assets[1].digest, null);
+  assert.equal(stable.assets.length, 5);
+  assert.deepEqual(output.releases.find(item => item.tag_name.startsWith('nas-')).assets.map(item => item.name), ['FTPSYNC-NAS-0.22.0-rc.49-amd64.zip', 'FTPSYNC-NAS-0.22.0-rc.49-arm64.zip', 'SHA256SUMS']);
+  assert.ok(classifyRelease(legacy), 'legacy lowercase bundle remains recognised by README');
+  assert.doesNotMatch(JSON.stringify(output), /example\.com|Not included|beta\.1|ftpsync-nas-/);
+  assert.deepEqual(buildMachineCatalogue([...input].reverse(), { previous: output, generatedAt: '2026-11-29T07:00:00.000Z' }), output);
+});
+
+test('validation and staging failures leave both existing outputs unchanged; identical metadata retains generation time', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'ftpsync-downloads-pair-'));
+  try {
+    const file = join(directory, 'README.md'), catalogueFile = join(directory, 'release-catalogue.json');
+    await writeFile(file, `${START}\nOld\n${END}\n`);
+    const releases = fixtures();
+    assert.equal(await refreshReadme({ file, releases, generatedAt: '2026-11-28T07:00:00.000Z' }), true);
+    const beforeREADME = await readFile(file, 'utf8'), beforeJSON = await readFile(catalogueFile, 'utf8');
+    await assert.rejects(refreshReadme({ file, releases: [release('0.22.3')] }), /complete Stable/);
+    assert.equal(await readFile(file, 'utf8'), beforeREADME); assert.equal(await readFile(catalogueFile, 'utf8'), beforeJSON);
+    await assert.rejects(refreshReadme({ file, releases, generatedAt: 'invalid' }), /UTC ISO/);
+    assert.equal(await readFile(file, 'utf8'), beforeREADME); assert.equal(await readFile(catalogueFile, 'utf8'), beforeJSON);
+    await assert.rejects(refreshReadme({ file, catalogueFile: join(directory, 'missing', 'release-catalogue.json'), releases: [...releases, release('0.22.3')] }), /ENOENT/);
+    assert.equal(await readFile(file, 'utf8'), beforeREADME); assert.equal(await readFile(catalogueFile, 'utf8'), beforeJSON);
+    assert.equal(await refreshReadme({ file, releases: [...releases].reverse(), generatedAt: '2026-11-30T07:00:00.000Z' }), false);
+    assert.equal(await readFile(catalogueFile, 'utf8'), beforeJSON);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
