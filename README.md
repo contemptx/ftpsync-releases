@@ -12,18 +12,18 @@ This repository contains installers, packaged applications, release notes and si
 | Edition | Current version | Published | Download |
 | --- | --- | --- | --- |
 | Windows Stable | 0.22.2 | 28 November 2026 | [Windows installer](https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.2/FTPSYNC-0.22.2-windows-x86_64-Setup.exe) · [Release notes](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.2) |
-| Windows Preview / beta | 0.22.0-rc.60 | 28 November 2026 | [Windows installer](https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.60/FTPSYNC-0.22.0-rc.60-windows-x86_64-Setup.exe) · [Release notes](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.60) |
+| Windows Preview / beta | 0.22.0-rc.61 | 28 November 2026 | [Windows installer](https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.61/FTPSYNC-0.22.0-rc.61-windows-x86_64-Setup.exe) · [Release notes](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.61) |
 | Docker / NAS Preview | 0.22.0-rc.60 | 28 November 2026 | [amd64 bundle](https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.60/FTPSYNC-NAS-0.22.0-rc.60-amd64.zip) · [arm64 bundle](https://github.com/contemptx/ftpsync-releases/releases/download/nas-v0.22.0-rc.60/FTPSYNC-NAS-0.22.0-rc.60-arm64.zip) · [Setup instructions](https://ftpsync.io/docker) |
 
 ### Latest five Windows releases
 
 | Version | Channel | Published |
 | --- | --- | --- |
+| [0.22.0-rc.61](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.61) | Preview / beta | 28 November 2026 |
 | [0.22.0-rc.60](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.60) | Preview / beta | 28 November 2026 |
 | [0.22.0-rc.58](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.58) | Preview / beta | 28 November 2026 |
 | [0.22.2](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.2) | Stable | 28 November 2026 |
 | [0.22.1](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.1) | Stable | 28 November 2026 |
-| [0.22.0-rc.57](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.57) | Preview / beta | 28 November 2026 |
 
 [Full release archive](https://github.com/contemptx/ftpsync-releases/releases)
 <!-- FTPSYNC-DOWNLOADS:END -->

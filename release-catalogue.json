@@ -1,8 +1,53 @@
 {
   "schemaVersion": 1,
   "repository": "contemptx/ftpsync-releases",
-  "generatedAt": "2026-11-28T10:57:40.461Z",
+  "generatedAt": "2026-11-28T14:23:16.132Z",
   "releases": [
+    {
+      "id": 461612904,
+      "tag_name": "v0.22.0-rc.61",
+      "draft": false,
+      "prerelease": true,
+      "published_at": "2026-11-28T14:22:49Z",
+      "html_url": "https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.61",
+      "assets": [
+        {
+          "name": "FTPSYNC-0.22.0-rc.61-windows-x86_64-Setup.exe",
+          "size": 11079385,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.61/FTPSYNC-0.22.0-rc.61-windows-x86_64-Setup.exe",
+          "state": "uploaded",
+          "digest": "sha256:a5e209423c078a376f0bffa71687815a0e51b7adfe377e2c69799e2f6f530b9a"
+        },
+        {
+          "name": "FTPSYNC-0.22.0-rc.61-windows-x86_64.exe",
+          "size": 44567040,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.61/FTPSYNC-0.22.0-rc.61-windows-x86_64.exe",
+          "state": "uploaded",
+          "digest": "sha256:ea931cf18fc37442a3392ce30e6c4fdd3d834f0e61b3f51a1223742f84bf1352"
+        },
+        {
+          "name": "RELEASE_NOTES.txt",
+          "size": 131,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.61/RELEASE_NOTES.txt",
+          "state": "uploaded",
+          "digest": "sha256:fc18e2267225deadaabd3299a4e1d6a4a64d64835bba9ed21d0c68804fa5d5ab"
+        },
+        {
+          "name": "SHA256SUMS.txt",
+          "size": 218,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.61/SHA256SUMS.txt",
+          "state": "uploaded",
+          "digest": "sha256:f09d77914e998a1d185eacc175a125b2d47d2464b1d0f4542d95e0c3bb2bf84d"
+        },
+        {
+          "name": "windows-x86_64.json",
+          "size": 2827,
+          "browser_download_url": "https://github.com/contemptx/ftpsync-releases/releases/download/v0.22.0-rc.61/windows-x86_64.json",
+          "state": "uploaded",
+          "digest": "sha256:47221faad73601a06b9eddb25f1c4fca8bd0f8ab863bb858bed03eca5b86b046"
+        }
+      ]
+    },
     {
       "id": 461491454,
       "tag_name": "nas-v0.22.0-rc.60",
