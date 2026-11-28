@@ -8,12 +8,12 @@ This repository contains installers, packaged applications, release notes and si
 
 | Channel | Current Windows release | Download |
 | --- | --- | --- |
-| Stable | 0.22.1 (28 November 2026) | [Latest Stable release](https://github.com/contemptx/ftpsync-releases/releases/latest) |
+| Stable | 0.22.2 (28 November 2026) | [Latest Stable release](https://github.com/contemptx/ftpsync-releases/releases/latest) |
 | Preview / beta | 0.22.0-rc.57 (28 November 2026) | [RC57 Preview release](https://github.com/contemptx/ftpsync-releases/releases/tag/v0.22.0-rc.57) |
 
 For a new installation, download the file ending in `-Setup.exe` from the release page. If FTPSYNC is already installed, open **Settings → Software updates** to check your channel.
 
-Both releases fix a licence activation check that could get stuck, add a redacted report for support, and keep saved account access connected until sign-out or revocation. Persistent FTP account connections currently require Preview RC57. [All releases](https://github.com/contemptx/ftpsync-releases/releases)
+Both releases fix a licence activation check that could get stuck, add a redacted report for support, and keep saved account access connected until sign-out or revocation. Persistent FTP account connections are supported in both current releases, without hourly credential renewal. [All releases](https://github.com/contemptx/ftpsync-releases/releases)
 
 ## Updates
 
