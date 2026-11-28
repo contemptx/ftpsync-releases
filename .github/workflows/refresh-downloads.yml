@@ -1,0 +1,62 @@
+name: Refresh public download catalogue
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh-downloads*.mjs'
+      - '.github/workflows/refresh-downloads.yml'
+  release:
+    types: [published, edited, deleted]
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'scripts/refresh-downloads*.mjs'
+      - '.github/workflows/refresh-downloads.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-download-catalogue-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: node --test scripts/refresh-downloads.test.mjs
+
+  refresh:
+    needs: validate
+    if: github.repository == 'contemptx/ftpsync-releases' && (github.event_name == 'release' || ((github.event_name == 'workflow_dispatch' || github.event_name == 'push') && github.ref == 'refs/heads/main'))
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Refresh the marked README region from published assets
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/refresh-downloads.mjs
+      - name: Commit only a changed README
+        run: |
+          git add -- README.md
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Refresh published FTPSYNC downloads'
+          git push origin HEAD:main
