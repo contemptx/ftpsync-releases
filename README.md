@@ -28,7 +28,7 @@ This repository contains installers, packaged applications, release notes and si
 [Full release archive](https://github.com/contemptx/ftpsync-releases/releases)
 <!-- FTPSYNC-DOWNLOADS:END -->
 
-For a new installation, download the file ending in `-Setup.exe` from the release page. If FTPSYNC is already installed, open **Settings → Software updates** to check your channel.
+For a new Windows installation, download the file ending in `-Setup.exe` from the release page. If FTPSYNC is already installed, open **Settings → Software updates** to check your channel.
 
 The current Windows releases include fixes for a licence activation check that could get stuck, add a redacted report for support, and keep saved account access connected until sign-out or revocation. Persistent FTP account connections are supported in both current Windows channels, without hourly credential renewal.
 

@@ -39,6 +39,7 @@ test('current channels use numeric SemVer; recent five use publication order and
 
 test('release and asset identities reject wrong hosts/repos/tags, missing architectures, duplicate names and incomplete uploads', () => {
   for (const alter of [
+    r => { r.tag_name = 123; },
     r => { r.html_url = r.html_url.replace('github.com', 'example.com'); },
     r => { r.assets[0].browser_download_url = r.assets[0].browser_download_url.replace(REPOSITORY, 'other/repo'); },
     r => { r.assets[0].browser_download_url += '?redirect=https://example.com'; },

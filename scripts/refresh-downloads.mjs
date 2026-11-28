@@ -46,7 +46,7 @@ function hasAsset(release, name) {
 }
 
 export function classifyRelease(release) {
-  if (!release || release.draft !== false || !Array.isArray(release.assets)
+  if (!release || release.draft !== false || typeof release.tag_name !== 'string' || !Array.isArray(release.assets)
     || typeof release.published_at !== 'string' || !Number.isFinite(Date.parse(release.published_at))) return null;
   const kind = release.tag_name?.startsWith('nas-v') ? 'nas' : 'windows';
   const version = versionOf(release.tag_name, kind === 'nas' ? 'nas-v' : 'v');
